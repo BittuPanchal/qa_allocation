@@ -1,9 +1,6 @@
 import streamlit as st
 import os
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.by import By
 import time
@@ -12,6 +9,18 @@ import pandas as pd
 
 @st.cache_resource
 def get_driver():
+    
+    from selenium.webdriver.chrome.service import Service
+    from selenium.webdriver.chrome.options import Options
+    from webdriver_manager.chrome import ChromeDriverManager
+    import platform
+    
+    options = Options()
+    options.add_argument('--headless')
+    options.add_argument('--disable-gpu')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    options.binary_location = "/usr/bin/chromium"
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     return driver
 
@@ -70,9 +79,6 @@ def download_data_from_kinnser(driver, branch, agency):
 
 # Streamlit UI
 if st.button("Click me!"):
-    options = Options()
-    options.add_argument('--headless')
-    options.add_argument('--disable-gpu')
     driver = get_driver()
     df = download_data_from_kinnser(driver, "PathWell Home Health - CT", "CT")
     st.dataframe(df)
