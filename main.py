@@ -9,19 +9,25 @@ import pandas as pd
 
 @st.cache_resource
 def get_driver():
-    
+    import os
     from selenium.webdriver.chrome.service import Service
     from selenium.webdriver.chrome.options import Options
     from webdriver_manager.chrome import ChromeDriverManager
-    import platform
-    
+
+    # Force specific ChromeDriver version by setting env variable
+    os.environ['WDM_CHROMEDRIVER'] = '120.0.6099.224'
+
     options = Options()
     options.add_argument('--headless')
     options.add_argument('--disable-gpu')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     options.binary_location = "/usr/bin/chromium"
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager(version="120.0.6099.224").install()),options=options)
+
+    driver = webdriver.Chrome(
+        service=Service(ChromeDriverManager().install()),
+        options=options
+    )
     return driver
 
 
