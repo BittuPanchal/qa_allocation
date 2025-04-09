@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.support.ui import Select
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
 import time
 import os
 import getpass
@@ -12,7 +13,14 @@ import streamlit as st
 # Download data from Kinnser-------------------------------------------------------------------------------------------------
 
 def download_data_from_kinnser(branch, agency): 
-    driver = webdriver.Chrome(service = ChromeService(ChromeDriverManager().install()))
+
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    
+    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+    # driver = webdriver.Chrome(service = ChromeService(ChromeDriverManager().install()))
     driver.get("https://kinnser.net/login.cfm")
     username_input = driver.find_element(By.ID, "username")
     username_input.click()
