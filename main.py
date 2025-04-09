@@ -12,14 +12,8 @@ import streamlit as st
 
 # Download data from Kinnser-------------------------------------------------------------------------------------------------
 
-def download_data_from_kinnser(branch, agency): 
+def download_data_from_kinnser(driver, branch, agency): 
 
-    options = Options()
-    options.add_argument("--headless")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
     # driver = webdriver.Chrome(service = ChromeService(ChromeDriverManager().install()))
     driver.get("https://kinnser.net/login.cfm")
     username_input = driver.find_element(By.ID, "username")
@@ -72,6 +66,11 @@ def download_data_from_kinnser(branch, agency):
 
 # Streamlit app-------------------------------------------------------------------------------------------------
 
+# driver = st.text_input("Enter Driver path")
 if st.button("Click me!"):
-    df = download_data_from_kinnser("PathWell Home Health - CT", "CT")
+    chrome_options = Options()
+    chrome_options.add_experimental_option("detach", True)  # To keep browser open after script ends (optional)
+    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
+
+    df = download_data_from_kinnser(driver, "PathWell Home Health - CT", "CT")
     st.dataframe(df)
