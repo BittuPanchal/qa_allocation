@@ -71,6 +71,7 @@ def download_data_from_kinnser(driver, branch, agency):
 # Streamlit UI
 if st.button("Click me!"):
     options = Options()
+    options.add_argument('--headless')
     options.add_argument('--disable-gpu')
     driver = get_driver()
     df = download_data_from_kinnser(driver, "PathWell Home Health - CT", "CT")
