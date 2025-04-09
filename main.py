@@ -1,16 +1,20 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.support.ui import Select
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.options import Options
-import time
+import streamlit as st
 import os
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.by import By
+import time
 import getpass
 import pandas as pd
-import streamlit as st
 
-# Download data from Kinnser-------------------------------------------------------------------------------------------------
+@st.cache_resource
+def get_driver():
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    return driver
+
 
 def download_data_from_kinnser(driver, branch, agency): 
 
@@ -64,13 +68,10 @@ def download_data_from_kinnser(driver, branch, agency):
 
     return df
 
-# Streamlit app-------------------------------------------------------------------------------------------------
-
-# driver = st.text_input("Enter Driver path")
+# Streamlit UI
 if st.button("Click me!"):
-    chrome_options = Options()
-    chrome_options.add_experimental_option("detach", True)  # To keep browser open after script ends (optional)
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
-
+    options = Options()
+    options.add_argument('--disable-gpu')
+    driver = get_driver()
     df = download_data_from_kinnser(driver, "PathWell Home Health - CT", "CT")
     st.dataframe(df)
